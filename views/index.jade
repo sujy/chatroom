@@ -5,4 +5,16 @@ block content
 	div
 		p 欢迎来到聊天室
 
-	button#test.btn.btn-success.btn-lg 点我测试
+	hr
+
+	div#login
+		form(role='form')
+			div.form-group
+				span.lead 用户名
+				input.form-control(type='text')
+			div.form-group
+				span.lead 密码
+				input.form-control(type='password')
+			div.form-group
+				button#btn-login.btn.btn-success.btn-lg 登陆
+				button#btn-register.btn.btn-success.btn-lg 注册

@@ -1,3 +1,14 @@
+#login {
+  width: 400px;
+  padding: 50px;
+  border: 1px grey solid;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+#btn-register {
+  margin-left: 50px;
+}
+
 body {
   text-align: center;
 }
