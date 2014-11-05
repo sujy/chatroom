@@ -103,4 +103,24 @@ module.exports = function(grunt) {
 
 	//设置默认任务
 	grunt.registerTask('default', ['clean', 'less', 'jshint:beforeConcat', 'concat', 'jshint:afterConcat', 'express', 'watch']);
+
+	grunt.registerTask('clearDatabase', 'Clearing database...', function() {
+		var db = require('./models/db');
+		var done = this.async();
+
+		db.clear(function() {
+			done();
+		});
+	});
+
+	grunt.registerTask('initialize', 'Initializing database...', function() {
+		var db = require('./models/db');
+		var done = this.async();
+
+		db.initialize(function() {
+			done();
+		});
+	});
+
+	grunt.registerTask('reset', ['clearDatabase','initialize']);
 };

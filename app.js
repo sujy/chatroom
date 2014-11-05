@@ -4,9 +4,7 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
 var routes = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
 
@@ -21,16 +19,12 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
-
 /// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
-
+// app.use(function(req, res, next) {
+//     var err = new Error('Not Found');
+//     err.status = 404;
+//     next(err);
+// });
 /// error handlers
 
 // development error handler
@@ -55,11 +49,21 @@ app.use(function(err, req, res, next) {
     });
 });
 
-var debug = require('debug')('chatroom');
+var db = require('./models/db');
+db.getConnection(function(db) {
+    app.use(function(req, res, next) {
+        req.db = db;
+        next();
+    });
 
-var server = app.listen(process.env.PORT || 3000, function() {
-    debug('Express server listening on port ' + server.address().port);
+    //全局路由控制
+    app.use('/', require('./routes/index'));
+
+    var debug = require('debug')('chatroom');
+
+    var server = app.listen(process.env.PORT || 3000, function() {
+        debug('Express server listening on port ' + server.address().port);
+    });
 });
-
 
 module.exports = app;
