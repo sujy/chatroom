@@ -1,0 +1,18 @@
+extends layout
+
+block content
+	div#register-form
+			h2 #{title}
+			hr
+			div#register-username.form-group
+				span.lead 用户名
+				input.form-control(type='text')
+			div#register-password.form-group
+				span.lead 密码
+				input.form-control(type='password')
+			div.form-group
+				span.lead 重复密码
+				input.form-control(type='password')
+			div.form-group
+				button#register-apply.btn.btn-success.btn-lg 提交
+				a(href='/')#btn-goback.btn.btn-danger.btn-lg 返回

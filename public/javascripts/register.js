@@ -1,8 +1,4 @@
 (function() {
-    $('#test').click(function() {
-        alert('success');
-    });
-})();;(function() {
     $('#register-apply').on('click', function() {
     	var username = $('#register-username input').val();
     	var password = $('#register-password input').val();

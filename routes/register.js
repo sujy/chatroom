@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
-//首页
+//注册
 router.get('/', function(req, res) {
-	res.render('index', {
-		title: '首页'
+	res.render('register', {
+		title: '注册'
 	});
 });
 

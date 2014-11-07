@@ -5,7 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
-
 var app = express();
 
 // view engine setup
@@ -18,14 +17,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-/// catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//     var err = new Error('Not Found');
-//     err.status = 404;
-//     next(err);
-// });
-/// error handlers
 
 // development error handler
 // will print stacktrace
@@ -58,11 +49,27 @@ db.getConnection(function(db) {
 
     //全局路由控制
     app.use('/', require('./routes/index'));
+    app.use('/register', require('./routes/register'));
 
-    var debug = require('debug')('chatroom');
+    //启动服务器(绑定socket.io)
+    var server = require('http').Server(app);
+    server.listen(3000);
+    var io = require('socket.io')(server);
 
-    var server = app.listen(process.env.PORT || 3000, function() {
-        debug('Express server listening on port ' + server.address().port);
+    io.on('connection', function(socket) {
+        console.log('服务器：有新的连接请求');
+
+        socket.emit('welcome');
+
+        socket.on('register', function(user) {
+            console.log(user);
+            console.log('服务器：请求注册的用户名为——' + user.username);
+            console.log('服务器：请求注册的密码为——' + user.password);
+        });
+
+        socket.on('disconnect', function() {
+            console.log('服务器：连接已关闭');
+        });
     });
 });
 

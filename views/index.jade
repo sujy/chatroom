@@ -1,12 +1,10 @@
 extends layout
 
 block content
-	h1 聊天室
-	div
-		p 欢迎来到聊天室
-	hr
-	div#login
+	div#login-form
 		form(role='form')
+			h2 #{title}
+			hr
 			div.form-group
 				span.lead 用户名
 				input.form-control(type='text')
@@ -15,4 +13,4 @@ block content
 				input.form-control(type='password')
 			div.form-group
 				button#btn-login.btn.btn-success.btn-lg 登陆
-				button#btn-register.btn.btn-success.btn-lg 注册
+				a(href='/register')#btn-register.btn.btn-success.btn-lg 注册
