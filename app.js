@@ -50,21 +50,32 @@ db.getConnection(function(db) {
     //全局路由控制
     app.use('/', require('./routes/index'));
     app.use('/register', require('./routes/register'));
+    app.use('/chat', require('./routes/chat'));
 
     //启动服务器(绑定socket.io)
     var server = require('http').Server(app);
     server.listen(3000);
     var io = require('socket.io')(server);
 
-    io.on('connection', function(socket) {
+    io.sockets.on('connection', function(socket) {
         console.log('服务器：有新的连接请求');
-
-        socket.emit('welcome');
 
         socket.on('register', function(user) {
             console.log(user);
-            console.log('服务器：请求注册的用户名为——' + user.username);
-            console.log('服务器：请求注册的密码为——' + user.password);
+            console.log('服务器：请求注册的  用户名：' + user.username);
+            console.log('服务器：请求注册的  密码：' + user.password);
+
+            if(user.username == 'test' && user.password == 'test') {
+                socket.emit('register success');
+            } else {
+                socket.emit('register failed');
+            }
+        });
+
+        socket.on('chat', function(message) {
+            console.log(message);
+            socket.broadcast.emit('chat', message);
+            socket.emit('chat', message);
         });
 
         socket.on('disconnect', function() {

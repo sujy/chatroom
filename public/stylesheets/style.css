@@ -1,3 +1,53 @@
+#chatroom {
+  padding: 10px;
+}
+#separator {
+  width: 2%;
+  height: 450px;
+  display: inline-block;
+}
+#online-list-header {
+  margin-left: 41px;
+  text-align: left;
+}
+#online-list-body {
+  width: 15%;
+  height: 450px;
+  overflow: auto;
+  overflow-x: hidden;
+  display: inline-block;
+}
+#chat-body {
+  width: 83%;
+  height: 470px;
+  display: inline-block;
+}
+#chat-box {
+  padding: 10px;
+  width: 100%;
+  height: 80%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: inline-block;
+  overflow-y: auto;
+  overflow-x: hidden;
+  text-align: left;
+}
+#chat-box p:nth-child(odd) {
+  background-color: #eee;
+}
+#message-box {
+  width: 100%;
+  height: 10%;
+  display: inline-block;
+}
+#chat-btns {
+  width: 100%;
+  height: 10%;
+  display: inline-block;
+  text-align: left;
+}
+
 #login-form {
   width: 350px;
   padding: 30px;
@@ -14,6 +64,7 @@
 
 body {
   text-align: center;
+  overflow: visible;
 }
 #page_content {
   margin: 0 auto;
