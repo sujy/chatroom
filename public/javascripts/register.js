@@ -1,42 +1,64 @@
 (function() {
-	//用户注册逻辑
-	$('#register-apply').click(function() {
-		var username = $('#register-username input').val();
-		var password = $('#register-password input').val();
-		var re_password = $('#register-password-repeat input').val();
-		var user = {
-			username: username,
-			password: password
-		};
-		var socket = io.connect('localhost:3000');
-		//信息完整性判断
-		if (username === '') {
-			alert('用户名不能为空');
-			return;
-		}
+    var socket;
+    $('#register-apply').on('click', function() {
+        socket = io();
+        var username = $('#register-username input').val();
+        var password = $('#register-password input').val();
+        var passwordComfirm = $('#register-password-confirm input').val();
+        console.log('username:' + username + '|password:' + password + '|passwordComfirm:' + passwordComfirm);
+        if ((password === '') || (username === '')) {
+            alert('密码和用户名不能为空，请重新输入！');
+            clear();
+        } else {
+            if (password.length < 6) {
+                alert('密码至少为6位，请重新输入！');
+                clear();
+            } else {
+                if (password == passwordComfirm) {
+                    socket.on('welcome', function(ip) {
+                        var user = {
+                            username: username,
+                            password: password
+                        };
+                        var sourceIp = ip;
+                        console.log(sourceIp);
+                        var _source = {
+                            ip: sourceIp,
+                            portaddr: '8888'
+                        };
+                        var _destination = {
+                            ip: '127.0.0.1',
+                            portaddr: '3000'
+                        };
+                        var _cookie = 'cookie null';
+                        var message = packageMessage('register', _source, _destination, _cookie, user);
+                        console.log(message);
+                        console.log(user);
+                        socket.emit('message', message);
+                    });
+                } else {
+                    alert('两次输入密码不一致，请重新输入！');
+                    clear();
+                }
+            }
+        }
 
-		if (password === '') {
-			alert('密码不能为空');
-			return;
-		}
+        socket.on('response', function(response) {
+            if (response.statusCode == 104) {
+                alert(response.data);
+                clear();
+                $('#register-username input').val('');
+            }
+            if (response.statusCode == 100) {
+                alert('恭喜！注册成功！');
+                window.location.href('/chat');
+            }
+        });
+    });
 
-		if (password !== re_password) {
-			alert('两次输入密码不一致');
-			return;
-		}
 
-		socket.emit('register', user);
-
-		console.log(user);
-
-		socket.on('register success', function() {
-			alert('注册成功');
-			window.location = '/chat';
-		});
-
-		socket.on('register failed', function() {
-			alert('注册失败');
-			window.location = '/register';
-		});
-	});
+    function clear() {
+        $('#register-password input').val('');
+        $('#register-password-confirm input').val('');
+    }
 })();

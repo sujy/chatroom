@@ -41,6 +41,8 @@ app.use(function(err, req, res, next) {
 });
 
 var db = require('./models/db');
+var User = require('./models/user');
+
 db.getConnection(function(db) {
     app.use(function(req, res, next) {
         req.db = db;
@@ -60,22 +62,41 @@ db.getConnection(function(db) {
     io.sockets.on('connection', function(socket) {
         console.log('服务器：有新的连接请求');
 
-        socket.on('register', function(user) {
-            console.log(user);
-            console.log('服务器：请求注册的  用户名：' + user.username);
-            console.log('服务器：请求注册的  密码：' + user.password);
-
-            if(user.username == 'test' && user.password == 'test') {
-                socket.emit('register success');
-            } else {
-                socket.emit('register failed');
-            }
-        });
-
-        socket.on('chat', function(message) {
+        socket.emit('welcome', socket.handshake.address);
+        socket.on('message', function(message) {
             console.log(message);
-            socket.broadcast.emit('chat', message);
-            socket.emit('chat', message);
+            if (message.action == 'register') {
+                console.log('服务器：请求注册的用户名为——' + message.data.username);
+                console.log('服务器：请求注册的密码为——' + message.data.password);
+                var _source = {
+                    ip: message.destination.ip,
+                    port: message.destination.port
+                };
+                var _destination = {
+                    ip: message.source.ip,
+                    port: message.source.port
+                };
+                User.get(message.data.username, function(err, data) {
+                    console.log('服务器：err->' + err + '\n服务器：data->' + data);
+                    if (data) {
+                        var _statusCode = 104;
+                        var _data = '用户' + message.data.username + '已经存在！请重新输入';
+                        var response = packageResponseMessage(_statusCode, _source, _destination, _data);
+                        console.log('服务器：用户' + message.data.username + '已经存在');
+                        console.log(response);
+                        socket.emit('response', response);
+                    } else {
+                        var newUser = new User(message.data);
+                        newUser.save(function(status, data) {
+                            var _statusCode = 100;
+                            var _data = '用户注册成功';
+                            console.log('服务器：添加用户' + message.data.username + '成功');
+                            var response = packageResponseMessage(_statusCode, _source, _destination, _data);
+                            socket.emit('response', response);
+                        });
+                    }
+                });
+            }
         });
 
         socket.on('disconnect', function() {
@@ -84,4 +105,24 @@ db.getConnection(function(db) {
     });
 });
 
+function packageResponseMessage(_statusCode, _source, _destination, _data) {
+    var object = {
+        statusCode: _statusCode,
+        source: {
+            ip: _source.ip,
+            port: _source.port
+        },
+        destination: {
+            ip: _destination.ip,
+            port: _destination.port
+        },
+        data: _data
+    };
+    return object;
+}
+
+function praseMessage(message) {
+    var object = $.parsejson(message);
+    return object;
+}
 module.exports = app;
