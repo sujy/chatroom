@@ -52,13 +52,14 @@ db.getConnection(function(db) {
     //全局路由控制
     app.use('/', require('./routes/index'));
     app.use('/register', require('./routes/register'));
+    app.use('/chat', require('./routes/chat'));
 
     //启动服务器(绑定socket.io)
     var server = require('http').Server(app);
     server.listen(3000);
     var io = require('socket.io')(server);
 
-    io.on('connection', function(socket) {
+    io.sockets.on('connection', function(socket) {
         console.log('服务器：有新的连接请求');
 
         socket.emit('welcome', socket.handshake.address);

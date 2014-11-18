@@ -1,0 +1,24 @@
+extends layout
+
+block content
+	div#chatroom
+		h4#online-list-header ★在线用户★
+		div#online-list-body
+			table.table.table-hover
+				tbody
+					tr
+						td(width="100px") test
+
+		div#separator
+
+		div#chat-body
+			div#chat-box
+				div#chat-dynamic
+					p(style='font-weight:bold;font-size:20px;text-align:center;') 系统：欢迎来到聊天室大厅
+			div#message-box
+				input.form-control(type = 'text' placeholder='按下Enter发送消息(支持HTML标签解析)，按下Esc清屏')
+			div#chat-btns
+				button(style='margin-right: 50px;')#send-message.btn.btn-primary 发送
+				button(style='margin-right: 50px;')#clean-box.btn.btn-primary 清屏
+				a(href='/')#logout.btn.btn-danger 登出
+
