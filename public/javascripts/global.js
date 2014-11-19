@@ -1,4 +1,3 @@
-
 function packageMessage(_action, _source, _destination, _cookie, _data) {
     var object = {
         action: _action,
@@ -13,10 +12,5 @@ function packageMessage(_action, _source, _destination, _cookie, _data) {
         cookie: _cookie,
         data: _data
     };
-    return object;
-}
-
-function praseMessage(message) {
-    var object = $.parsejson(message);
     return object;
 }
