@@ -51,7 +51,7 @@
             }
             if (response.statusCode == 100) {
                 alert('恭喜！注册成功！');
-                window.location.href('/chat');
+                window.location = '/chat';
             }
         });
     });

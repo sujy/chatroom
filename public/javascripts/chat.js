@@ -1,15 +1,15 @@
 (function() {
-	var socket;
+	var socket = io();
 	/**
-	  *  清屏函数
-	  **/
+	 *  清屏函数
+	 **/
 	var cleanScreen = function() {
 		$('#chat-dynamic').empty();
 		$('#chat-dynamic').append("<p style='font-weight:bold;font-size:20px;text-align:center;')> 系统：欢迎来到聊天室大厅</p>");
 	};
 	/**
-	  *  消息发送函数
-	  **/
+	 *  消息发送函数
+	 **/
 	var sendMessage = function() {
 		var username = 'test';
 		var date = new Date(),
@@ -44,34 +44,33 @@
 	};
 
 	/**
-	  *  发送消息
-	  **/
-	if (window.location.href === 'http://172.18.34.13:3000/chat') {
-		socket = io.connect('172.18.34.13:3000');
-		//按下Enter
-		$('#message-box input').keydown(function(e) {
-			if (e.keyCode === 13) {
-				$('#send-message').click();
-			}
-		});
-		//点击发送按钮
-		$('#send-message').click(function() {
-			sendMessage();
-		});
-		//滚动条自动滚动
-		socket.on('chat', function(message) {
-			$('#chat-dynamic').append('<p><b>(' + message.time + ') ' + message.username + ' : </b>' + message.content + '</p>');
-			var scrollHeight = $('#chat-dynamic').height() - $('#chat-box').height();
-			$('#chat-box').scrollTop(scrollHeight);
-		});
-	}
+	 *  发送消息
+	 **/
+
+	//按下Enter
+	$('#message-box input').keydown(function(e) {
+		if (e.keyCode === 13) {
+			$('#send-message').click();
+		}
+	});
+	//点击发送按钮
+	$('#send-message').click(function() {
+		sendMessage();
+	});
+	//滚动条自动滚动
+	socket.on('chat', function(message) {
+		$('#chat-dynamic').append('<p><b>(' + message.time + ') ' + message.username + ' : </b>' + message.content + '</p>');
+		var scrollHeight = $('#chat-dynamic').height() - $('#chat-box').height();
+		$('#chat-box').scrollTop(scrollHeight);
+	});
+
 
 	/**
-	  *  清除屏幕现有消息
-	  **/
+	 *  清除屏幕现有消息
+	 **/
 	//按下Esc
 	$('body').keydown(function(e) {
-		if(e.keyCode === 27) {
+		if (e.keyCode === 27) {
 			$('#clean-box').click();
 		}
 	});
