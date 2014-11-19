@@ -32,6 +32,7 @@
 		} else {
 			time = hour_str + ':' + minute_str + ':' + seconds_str + '  AM';
 		}
+
 		var message = {
 			username: username,
 			time: time,
@@ -61,6 +62,7 @@
 		var scrollHeight = $('#chat-dynamic').height() - $('#chat-box').height();
 		$('#chat-box').scrollTop(scrollHeight);
 	});
+
 
 	/**
 	 *  清除屏幕现有消息
@@ -116,7 +118,6 @@
 				}
 			}
 		});
-
 		socket.on('response', function(response) {
 			if (response.statusCode == 104) {
 				alert(response.data);
