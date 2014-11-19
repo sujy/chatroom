@@ -46,7 +46,6 @@
 	/**
 	 *  发送消息
 	 **/
-
 	//按下Enter
 	$('#message-box input').keydown(function(e) {
 		if (e.keyCode === 13) {

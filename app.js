@@ -59,15 +59,15 @@ db.getConnection(function(db) {
     server.listen(3000);
     var io = require('socket.io')(server);
 
-    io.sockets.on('connection', function(socket) {
+    io.on('connection', function(socket) {
         console.log('服务器：有新的连接请求');
+        console.log('请求的路径:\n' + socket.handshake.headers.referer);
 
         socket.emit('welcome', socket.handshake.address);
         socket.on('message', function(message) {
-            console.log(message);
             if (message.action == 'register') {
-                console.log('服务器：请求注册的用户名为——' + message.data.username);
-                console.log('服务器：请求注册的密码为——' + message.data.password);
+                // console.log('服务器：请求注册的用户名为——' + message.data.username);
+                // console.log('服务器：请求注册的密码为——' + message.data.password);
                 var _source = {
                     ip: message.destination.ip,
                     port: message.destination.port
@@ -77,13 +77,12 @@ db.getConnection(function(db) {
                     port: message.source.port
                 };
                 User.get(message.data.username, function(err, data) {
-                    console.log('服务器：err->' + err + '\n服务器：data->' + data);
+                    // console.log('服务器：err->' + err + '\n服务器：data->' + data);
                     if (data) {
                         var _statusCode = 104;
                         var _data = '用户' + message.data.username + '已经存在！请重新输入';
                         var response = packageResponseMessage(_statusCode, _source, _destination, _data);
                         console.log('服务器：用户' + message.data.username + '已经存在');
-                        console.log(response);
                         socket.emit('response', response);
                     } else {
                         var newUser = new User(message.data);
@@ -97,6 +96,12 @@ db.getConnection(function(db) {
                     }
                 });
             }
+        });
+
+        socket.on('chat', function(message) {
+            console.log(message);
+            socket.broadcast.emit('chat', message);
+            socket.emit('chat', message);
         });
 
         socket.on('disconnect', function() {
@@ -121,8 +126,4 @@ function packageResponseMessage(_statusCode, _source, _destination, _data) {
     return object;
 }
 
-function praseMessage(message) {
-    var object = $.parsejson(message);
-    return object;
-}
 module.exports = app;

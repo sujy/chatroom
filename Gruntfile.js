@@ -25,7 +25,7 @@ module.exports = function(grunt) {
 			},
 
 			javascripts: {
-				src: ['public/javascripts/**/*.js', '!public/javascripts/build.js'],
+				src: ['public/javascripts/**/*.js', '!public/javascripts/build.js', '!public/javascripts/global.js'],
 				dest: 'public/javascripts/build.js'
 			}
 		},
