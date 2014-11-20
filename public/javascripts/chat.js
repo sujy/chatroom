@@ -78,6 +78,7 @@
 		*
 	**/
 	function updateChatList(namelist) {
+		if (namelist === undefined) return;
 		console.log(namelist);
 		var chatlist  = "";
 		for(var i = 0; i < namelist.length; i++) {
@@ -90,6 +91,7 @@
 
 	socket.on('welcome',function(ip){
 		IP = ip;
+		console.log(ip);
 		getChatList();
 	});
 
