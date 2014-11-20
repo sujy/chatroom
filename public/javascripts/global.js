@@ -1,3 +1,4 @@
+var USERNAME = '329';
 function packageMessage(_action, _source, _destination, _cookie, _data) {
     var object = {
         action: _action,

@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -42,7 +41,8 @@ app.use(function(err, req, res, next) {
 
 var db = require('./models/db');
 var User = require('./models/user');
-
+var Chatlist = require('./models/chatlist');
+var chatlist = new Chatlist();
 db.getConnection(function(db) {
     app.use(function(req, res, next) {
         req.db = db;
@@ -58,39 +58,67 @@ db.getConnection(function(db) {
     var server = require('http').Server(app);
     server.listen(3000);
     var io = require('socket.io')(server);
+    var _source, _destination,_statusCode,_data;
+
+    var response;
+
+    // manifest online chaters
 
     io.on('connection', function(socket) {
         console.log('服务器：有新的连接请求');
         console.log('请求的路径:\n' + socket.handshake.headers.referer);
-
         socket.emit('welcome', socket.handshake.address);
         socket.on('message', function(message) {
-            if (message.action == 'register') {
-                // console.log('服务器：请求注册的用户名为——' + message.data.username);
-                // console.log('服务器：请求注册的密码为——' + message.data.password);
-                var _source = {
+        		if (message.action == 'list') {
+                _source = {
                     ip: message.destination.ip,
                     port: message.destination.port
                 };
-                var _destination = {
+                _destination = {
+                    ip: message.source.ip,
+                    port: message.source.port
+                };
+                if (chatlist.namelist != []) {
+                	_statusCode = 400;
+                	_data = chatlist.namelist;
+                	response = packageResponseMessage(_statusCode, _source, _destination, _data);
+                } else {
+                	_statusCode = 404;
+                	_data = "Cant get online chaters list!";
+                	response = packageResponseMessage(_statusCode, _source, _destination, _data);
+                }
+                socket.broadcast.emit('response', response);
+                socket.emit('response', response);
+        		}
+
+            if (message.action == 'register') {
+                console.log('服务器：请求注册的用户名为——' + message.data.username);
+                console.log('服务器：请求注册的密码为——' + message.data.password);
+                _source = {
+                    ip: message.destination.ip,
+                    port: message.destination.port
+                };
+                _destination = {
                     ip: message.source.ip,
                     port: message.source.port
                 };
                 User.get(message.data.username, function(err, data) {
-                    // console.log('服务器：err->' + err + '\n服务器：data->' + data);
+                    console.log('服务器：err->' + err + '\n服务器：data->' + data);
                     if (data) {
-                        var _statusCode = 104;
-                        var _data = '用户' + message.data.username + '已经存在！请重新输入';
-                        var response = packageResponseMessage(_statusCode, _source, _destination, _data);
+                        _statusCode = 104;
+                        _data = '用户' + message.data.username + '已经存在！请重新输入';
+                        response = packageResponseMessage(_statusCode, _source, _destination, _data);
                         console.log('服务器：用户' + message.data.username + '已经存在');
                         socket.emit('response', response);
                     } else {
                         var newUser = new User(message.data);
                         newUser.save(function(status, data) {
-                            var _statusCode = 100;
-                            var _data = '用户注册成功';
+                            _statusCode = 100;
+                            _data = '用户注册成功';
                             console.log('服务器：添加用户' + message.data.username + '成功');
-                            var response = packageResponseMessage(_statusCode, _source, _destination, _data);
+                            response = packageResponseMessage(_statusCode, _source, _destination, _data);
+                            // add username into chatlist
+                            chatlist.add(message.data.username);
                             socket.emit('response', response);
                         });
                     }
@@ -109,6 +137,7 @@ db.getConnection(function(db) {
         });
     });
 });
+
 
 function packageResponseMessage(_statusCode, _source, _destination, _data) {
     var object = {

@@ -1,17 +1,47 @@
 (function() {
+/*********************************** variable ******************************/
 	var socket = io();
+	var IP;
+	var _source = {
+		ip: IP,
+			portaddr: '8888'
+		};
+	var _destination = {
+		ip: '127.0.0.1',
+		portaddr: '3000'
+	};
+	var _cookie = 'cookie null';
+
+
+/************************************ function ********************************/
 	/**
 	 *  清屏函数
 	 **/
-	var cleanScreen = function() {
+	function cleanScreen() {
 		$('#chat-dynamic').empty();
 		$('#chat-dynamic').append("<p style='font-weight:bold;font-size:20px;text-align:center;')> 系统：欢迎来到聊天室大厅</p>");
-	};
+	}
+
+
+	/*	*
+		*	get online chaters list
+		* return
+	**/
+	function getChatList() {
+		socket.emit('message', packageMessage(
+			'list',
+			_source,
+			_destination,
+			_cookie,
+			'null'
+		));
+	}
+
 	/**
 	 *  消息发送函数
 	 **/
 	var sendMessage = function() {
-		var username = 'test';
+		var username = USERNAME;
 		var date = new Date(),
 			time;
 		var hour = date.getHours(),
@@ -44,6 +74,39 @@
 	};
 
 	/**
+		*	updateChatList() function
+		*
+	**/
+	function updateChatList(namelist) {
+		console.log(namelist);
+		var chatlist  = "";
+		for(var i = 0; i < namelist.length; i++) {
+			chatlist = chatlist + "<tr><td width='100px'>" + namelist[i] + "</td></tr>";
+		}
+		$('#chat-list').html(chatlist);
+	}
+
+/*************************************** Event ********************************/
+
+	socket.on('welcome',function(ip){
+		IP = ip;
+		getChatList();
+	});
+
+	socket.on('response', function(response){
+		switch(response.statusCode){
+			case 400 :
+				updateChatList(response.data);
+				break;
+			case 404 :
+				handleChatListError();
+				break;
+		}
+
+
+
+	});
+	/**
 	 *  发送消息
 	 **/
 	//按下Enter
@@ -62,7 +125,6 @@
 		var scrollHeight = $('#chat-dynamic').height() - $('#chat-box').height();
 		$('#chat-box').scrollTop(scrollHeight);
 	});
-
 	/**
 	 *  清除屏幕现有消息
 	 **/
