@@ -1,7 +1,7 @@
 var User = require('../models/user');
 var msgHandler = require('./message');
 
-exports.handle = function(socket, message) {
+exports.handle = function(socket, message, chatList) {
 	// console.log('服务器：请求注册的用户名为——' + message.data.username);
 	// console.log('服务器：请求注册的密码为——' + message.data.password);
 	var _source = {
@@ -28,6 +28,7 @@ exports.handle = function(socket, message) {
 				console.log('服务器：添加用户' + message.data.username + '成功');
 				var response = msgHandler.packageResponseMessage(_statusCode, _source, _destination, _data);
 				socket.emit('response', response);
+				chatList.add(message.data.username);
 			});
 		}
 	});

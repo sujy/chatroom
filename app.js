@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -41,8 +40,11 @@ app.use(function(err, req, res, next) {
 });
 
 var db = require('./models/db');
+var User = require('./models/user');
+var ChatList = require('./models/chatlist');
+var chatList = new ChatList();
 var registerHandler = require('./handler/register');
-
+var listHandler = require('./handler/list');
 db.getConnection(function(db) {
     app.use(function(req, res, next) {
         req.db = db;
@@ -58,15 +60,19 @@ db.getConnection(function(db) {
     var server = require('http').Server(app);
     server.listen(3000);
     var io = require('socket.io')(server);
+    // manifest online chaters
 
     io.on('connection', function(socket) {
         console.log('服务器：有新的连接请求');
         console.log('请求的路径:\n' + socket.handshake.headers.referer);
-
         socket.emit('welcome', socket.handshake.address);
         socket.on('message', function(message) {
+        		if (message.action == 'list') {
+        			listHandler.handle(socket, message, chatList);
+        		}
+
             if (message.action == 'register') {
-                registerHandler.handle(socket, message);
+                registerHandler.handle(socket, message, chatList);
             }
         });
 
