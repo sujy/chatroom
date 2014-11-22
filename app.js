@@ -45,6 +45,7 @@ var ChatList = require('./models/chatlist');
 var chatList = new ChatList();
 var registerHandler = require('./handler/register');
 var listHandler = require('./handler/list');
+var broadcastHandler = require('./handler/broadcast');
 db.getConnection(function(db) {
     app.use(function(req, res, next) {
         req.db = db;
@@ -63,27 +64,29 @@ db.getConnection(function(db) {
     // manifest online chaters
 
     io.on('connection', function(socket) {
-        console.log('服务器：有新的连接请求');
-        console.log('请求的路径:\n' + socket.handshake.headers.referer);
+        console.log('\n服务器：有新的连接请求');
+        console.log('\n客户端的IP为：' + socket.handshake.address);
+        console.log('\n请求的路径：' + socket.handshake.headers.referer + '\n');
         socket.emit('welcome', socket.handshake.address);
         socket.on('message', function(message) {
-        		if (message.action == 'list') {
-        			listHandler.handle(socket, message, chatList);
-        		}
-
-            if (message.action == 'register') {
-                registerHandler.handle(socket, message, chatList);
+            switch (message.action) {
+                //请求在线用户列表
+                case 'list':
+                    listHandler.handle(socket, message, chatList);
+                    break;
+                    //用户注册
+                case 'register':
+                    registerHandler.handle(socket, message, chatList);
+                    break;
+                    //广播消息
+                case 'broadcast':
+                    broadcastHandler.handle(socket, message);
+                    break;
             }
         });
 
-        socket.on('chat', function(message) {
-            console.log(message);
-            socket.broadcast.emit('chat', message);
-            socket.emit('chat', message);
-        });
-
         socket.on('disconnect', function() {
-            console.log('服务器：连接已关闭');
+            console.log('\n服务器：连接已关闭');
         });
     });
 });
