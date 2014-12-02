@@ -42,7 +42,7 @@ app.use(function(err, req, res, next) {
 
 var db = require('./models/db');
 var registerHandler = require('./handler/register');
-
+var loginHandler = require('./handler/login');
 db.getConnection(function(db) {
     app.use(function(req, res, next) {
         req.db = db;
@@ -67,6 +67,9 @@ db.getConnection(function(db) {
         socket.on('message', function(message) {
             if (message.action == 'register') {
                 registerHandler.handle(socket, message);
+            }
+            if (message.action == 'login') {
+                loginHandler.handle(socket, message);
             }
         });
 
