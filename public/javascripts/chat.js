@@ -1,17 +1,44 @@
 (function() {
+	/*********************************** variable ******************************/
 	var socket = io();
+	var IP;
+	var _source;
+	var _destination = {
+		ip: '127.0.0.1',
+		portaddr: '3000'
+	};
+	var _cookie = 'cookie null';
+
+
+	/************************************ function ********************************/
 	/**
 	 *  清屏函数
 	 **/
-	var cleanScreen = function() {
+	function cleanScreen() {
 		$('#chat-dynamic').empty();
 		$('#chat-dynamic').append("<p style='font-weight:bold;font-size:20px;text-align:center;')> 系统：欢迎来到聊天室大厅</p>");
-	};
+	}
+
+
+	/*	*
+	 *	get online chaters list
+	 * return
+	 **/
+	function getChatList() {
+		socket.emit('message', packageMessage(
+			'list',
+			_source,
+			_destination,
+			_cookie,
+			'null'
+		));
+	}
+
 	/**
 	 *  消息发送函数
 	 **/
-	var sendMessage = function() {
-		var username = 'test';
+	function sendMessage() {
+		var username = USERNAME;
 		var date = new Date(),
 			time;
 		var hour = date.getHours(),
@@ -33,15 +60,67 @@
 			time = hour_str + ':' + minute_str + ':' + seconds_str + '  AM';
 		}
 
-		var message = {
-			username: username,
-			time: time,
-			content: content
-		};
+		var message = packageMessage(
+			'broadcast',
+			_source,
+			_destination,
+			_cookie, {
+				username: username,
+				time: time,
+				content: content
+			}
+		);
 
-		socket.emit('chat', message);
+		socket.emit('message', message);
 		$('#message-box input').val('');
-	};
+	}
+
+	/**
+	 *  消息框更新函数
+	 **/
+	function updateMessageBox(message) {
+		$('#chat-dynamic').append('<p><b>(' + message.time + ') ' + message.username + ' : </b>' + message.content + '</p>');
+		var scrollHeight = $('#chat-dynamic').height() - $('#chat-box').height();
+		$('#chat-box').scrollTop(scrollHeight);
+	}
+
+	/**
+	 *	updateChatList() function
+	 *
+	 **/
+	function updateChatList(namelist) {
+		if (namelist === undefined) return;
+		var chatlist = "";
+		for (var i = 0; i < namelist.length; i++) {
+			chatlist = chatlist + "<tr><td width='100px'>" + namelist[i] + "</td></tr>";
+		}
+		$('#chat-list').html(chatlist);
+	}
+
+	/*************************************** Event ********************************/
+
+	socket.on('welcome', function(ip) {
+		IP = ip;
+		_source = {
+			ip: IP,
+			portaddr: '8888'
+		};
+		getChatList();
+	});
+
+	socket.on('response', function(response) {
+		switch (response.statusCode) {
+			case 400:
+				updateChatList(response.data);
+				break;
+			case 404:
+				handleChatListError();
+				break;
+			case 500:
+				updateMessageBox(response.data);
+				break;
+		}
+	});
 
 	/**
 	 *  发送消息
@@ -56,14 +135,6 @@
 	$('#send-message').click(function() {
 		sendMessage();
 	});
-	//滚动条自动滚动
-	socket.on('chat', function(message) {
-		$('#chat-dynamic').append('<p><b>(' + message.time + ') ' + message.username + ' : </b>' + message.content + '</p>');
-		var scrollHeight = $('#chat-dynamic').height() - $('#chat-box').height();
-		$('#chat-box').scrollTop(scrollHeight);
-	});
-
-
 	/**
 	 *  清除屏幕现有消息
 	 **/

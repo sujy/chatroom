@@ -4,6 +4,7 @@
 		$('#register-apply').on('click', function() {
 			var username = $('#register-username input').val();
 			var password = $('#register-password input').val();
+									USERNAME = username;
 			var passwordComfirm = $('#register-password-confirm input').val();
 			console.log('username:' + username + '|password:' + password + '|passwordComfirm:' + passwordComfirm);
 			if ((password === '') || (username === '')) {
@@ -33,6 +34,7 @@
 						var message = packageMessage('register', _source, _destination, _cookie, user);
 						console.log(message);
 						console.log(user);
+
 						socket.emit('message', message);
 					} else {
 						alert('两次输入密码不一致，请重新输入！');
@@ -40,6 +42,7 @@
 					}
 				}
 			}
+
 		});
 		socket.on('response', function(response) {
 			if (response.statusCode == 104) {
