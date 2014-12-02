@@ -2,15 +2,14 @@ extends layout
 
 block content
 	div#login-form
-		form(role='form')
-			h2 #{title}
-			hr
-			div.form-group
-				span.lead 用户名
-				input.form-control(type='text')
-			div.form-group
-				span.lead 密码
-				input.form-control(type='password')
-			div.form-group
-				button#btn-login.btn.btn-success.btn-lg 登陆
-				a(href='/register')#btn-register.btn.btn-success.btn-lg 注册
+		h2 #{title}
+		hr
+		div#login-user.form-group
+			span.lead 用户名
+			input.form-control(type='text')
+		div#login-password.form-group
+			span.lead 密码
+			input.form-control(type='password')
+		div.form-group
+			button#btn-login.btn.btn-success.btn-lg 登陆
+			a(href='/register')#btn-register.btn.btn-success.btn-lg 注册

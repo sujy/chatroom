@@ -44,7 +44,6 @@
 			}
 
 		});
-
 		socket.on('response', function(response) {
 			if (response.statusCode == 104) {
 				alert(response.data);
