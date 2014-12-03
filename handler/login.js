@@ -1,7 +1,7 @@
 var User = require('../models/user');
 var msgHandler = require('./message');
 
-exports.handle = function(socket, message){
+exports.handle = function(socket, message, chatList){
 	var _source = {
 		ip: message.destination.ip,
 		port: message.destination.port
@@ -19,6 +19,7 @@ exports.handle = function(socket, message){
 			if(data.password == message.data.password){
 				_statusCode = 200;
 				_data = '登陆成功，欢迎'+ message.data.username +'！';
+				chatList.add(message.data.username);
 			} else {
 				_statusCode = 204;
 				_data = '用户密码错误，请重试！';
