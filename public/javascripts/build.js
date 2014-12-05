@@ -35,6 +35,7 @@
 					content = {
 						type: FILE_TYPE,
 						filename: filename,
+						filesize: file.size,
 						content: cont
 					};
 					break;
