@@ -64,19 +64,6 @@
 				}
 			);
 		}
-		
-  
-  /**
-	 *  设置用户名函数
-	 **/
-  function setUser(){
-    var url = window.location.toString();
-    var info = url.split('?');
-    console.log(url + info);
-    USERNAME = info[1];
-  }
-
-
 
 	/**
 	 *  清屏函数

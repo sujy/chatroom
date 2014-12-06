@@ -47,6 +47,7 @@ var registerHandler = require('./handler/register');
 var loginHandler = require('./handler/login');
 var listHandler = require('./handler/list');
 var broadcastHandler = require('./handler/broadcast');
+var logoutHandler = require('./handler/logout');
 db.getConnection(function(db) {
     app.use(function(req, res, next) {
         req.db = db;
@@ -86,6 +87,11 @@ db.getConnection(function(db) {
                     //登陆
                 case 'login':
                     loginHandler.handle(socket, message, chatList);
+                    break;
+                    //登出
+                case 'logout':
+                    logoutHandler.handle(socket, message, chatList);
+                    break;
             }
         });
 
