@@ -44,6 +44,7 @@ var User = require('./models/user');
 var ChatList = require('./models/chatlist');
 var chatList = new ChatList();
 var registerHandler = require('./handler/register');
+var loginHandler = require('./handler/login');
 var listHandler = require('./handler/list');
 var broadcastHandler = require('./handler/broadcast');
 db.getConnection(function(db) {
@@ -82,6 +83,9 @@ db.getConnection(function(db) {
                 case 'broadcast':
                     broadcastHandler.handle(socket, message);
                     break;
+            }
+            if (message.action == 'login') {
+                loginHandler.handle(socket, message);
             }
         });
 
