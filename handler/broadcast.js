@@ -2,7 +2,7 @@ var msgHandler = require('./message');
 var fs = require('fs');
 var FILE_TYPE = 'FILE';
 var TEXT_TYPE = 'TEXT';
-var UPLOAD_PATH = './upload/';
+var UPLOAD_PATH = 'upload/';
 /**
  *	File 代表上传文件的信息
  *	同时为多文件上传提供可能
@@ -94,14 +94,18 @@ function fileHandler(message, writeStream) {
 		time: message.data.time,
 		content: {
 			type: FILE_TYPE,
-			content: '文件 ' + message.data.content.filename + ' 已上传 ： ' +
-				Math.floor((File[message.data.content.filename].FileUploadPionter /
-					message.data.content.filesize) * 100) + "%"
+			filename : message.data.content.filename,
+			percentage: Math.floor((File[message.data.content.filename].FileUploadPionter /
+					message.data.content.filesize) * 100),
+			address : null
 		}
 	};
 	if (message.data.content.content.Final) {
-		File[message.data.content.filename].FileUploadPionter = 0;
-		File[message.data.content.filename].File_End = true;
+		File[message.data.content.filename].File = 0;
+		responseData.address = message.destination.ip + ':' +
+		message.destination.port+ '/' + UPLOAD_PATH +
+		message.data.content.filename;
+
 	}
 	return responseData;
 }

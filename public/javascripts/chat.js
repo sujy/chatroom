@@ -106,8 +106,8 @@
 		var FINISHREAD = true;
 		if ($("#file-upload").val() !== '') {
 			/**
-			* 这里是用的一个闭包方法取消忙等待
-			**/
+			 * 这里是用的一个闭包方法取消忙等待
+			 **/
 			fileRead(fileSplice(startPoint, endPoint, file.file));
 		} else {
 			socket.emit('message', message(TEXT_TYPE, $('#message-box input').val()));
@@ -142,8 +142,8 @@
 		function fileRead(f) {
 			if (FINISHREAD) {
 				if (f.size !== 0) {
-				fileReader.readAsBinaryString(f);
-				FINISHREAD = false;
+					fileReader.readAsBinaryString(f);
+					FINISHREAD = false;
 				}
 			}
 		}
@@ -168,6 +168,24 @@
 	 *  消息框更新函数
 	 **/
 	function updateMessageBox(message) {
+		switch (message.content.type) {
+			case FILE_TYPE:
+				updateMessageBox_File(message);
+				break;
+			case TEXT_TYPE:
+				updateMessageBox_Text(message);
+				break;
+		}
+	}
+	function updateMessageBox_File(message) {
+		$('#chat-dynamic').append('<p><b>(' + message.time + ') ' + message.username  +
+			' : </b>' + message.content.filename  +
+			'<a target="_blank" href=' + message.address + '>' + ' 下载 </a>' + '</p>');
+		var scrollHeight = $('#chat-dynamic').height() - $('#chat-box').height();
+		$('#chat-box').scrollTop(scrollHeight);
+	}
+
+	function updateMessageBox_Text(message) {
 		$('#chat-dynamic').append('<p><b>(' + message.time + ') ' + message.username + ' : </b>' + message.content.content + '</p>');
 		var scrollHeight = $('#chat-dynamic').height() - $('#chat-box').height();
 		$('#chat-box').scrollTop(scrollHeight);
