@@ -83,9 +83,9 @@ db.getConnection(function(db) {
                 case 'broadcast':
                     broadcastHandler.handle(socket, message);
                     break;
-            }
-            if (message.action == 'login') {
-                loginHandler.handle(socket, message);
+                    //登陆
+                case 'login':
+                    loginHandler.handle(socket, message, chatList);
             }
         });
 
