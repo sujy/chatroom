@@ -18,11 +18,11 @@ exports.handle = function(socket, message, chatList){
 			console.log('找到用户');
 			if(data.password == message.data.password){
 				_statusCode = 200;
-				_data = '登陆成功，欢迎'+ message.data.username +'！';
+				_data = message.data.username;
 				chatList.add(message.data.username);
 			} else {
 				_statusCode = 204;
-				_data = '用户密码错误，请重试！';
+				_data = '密码错误，请输入正确密码！';
 			}
 			response = msgHandler.packageResponseMessage(_statusCode, _source, _destination, _data);
 			console.log(response);

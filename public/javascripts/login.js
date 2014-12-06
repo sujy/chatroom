@@ -43,8 +43,9 @@
 				$('#login-password input').val('');
 			}
 			if (response.statusCode == 200) {
-				alert(response.data);
-				window.location = '/chat';
+				alert('欢迎回来 ' + response.data + ' !');
+				USERNAME = response.data;
+				window.location = '/chat?' + USERNAME;
 			}
 		});
 	});

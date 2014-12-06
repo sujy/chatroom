@@ -64,14 +64,27 @@
 				}
 			);
 		}
-		/**
-		 *  清屏函数
-		 **/
+		
+  
+  /**
+	 *  设置用户名函数
+	 **/
+  function setUser(){
+    var url = window.location.toString();
+    var info = url.split('?');
+    console.log(url + info);
+    USERNAME = info[1];
+  }
+
+
+
+	/**
+	 *  清屏函数
+	 **/
 	function cleanScreen() {
 		$('#chat-dynamic').empty();
 		$('#chat-dynamic').append("<p style='font-weight:bold;font-size:20px;text-align:center;')> 系统：欢迎来到聊天室大厅</p>");
 	}
-
 
 	/*	*
 	 *	get online chaters list
@@ -230,6 +243,12 @@
 	});
 
 	/**
+	 *  设置用户明
+	 **/
+	$(document).ready(function(){  
+    setUser();  
+	});  
+	/**
 	 *  发送消息
 	 **/
 	//按下Enter
@@ -280,17 +299,6 @@
 	});
 
 
-})();;(function(){
-	var socket = io();
-	$("#message-send").click(function() {
-		console.log($("#message-input").val());
-		socket.emit('chat message', $("#message-input").val());
-		$("message-input").val('');
-	});
-	socket.on('chat message', function(msg) {
-		console.log(msg);
-		$("#chatroom").append($("<p>").text(msg));
-	});
 })();;(function() {
 	var socket = io();
 	var _source = '';
@@ -336,12 +344,13 @@
 				$('#login-password input').val('');
 			}
 			if (response.statusCode == 200) {
-				alert(response.data);
-				window.location = '/chat';
+				alert('欢迎回来 ' + response.data + ' !');
+				USERNAME = response.data;
+				window.location = '/chat?' + USERNAME;
 			}
 		});
 	});
-})();;(function() {
+})();;;(function() {
 	var socket = io();
 	socket.on('welcome', function(ip) {
 		$('#register-apply').on('click', function() {
@@ -395,7 +404,7 @@
 			}
 			if (response.statusCode == 100) {
 				alert('恭喜！注册成功！');
-				window.location = '/chat';
+				window.location = '/chat?'+$('#register-username input').val();
 			}
 		});
 	});
