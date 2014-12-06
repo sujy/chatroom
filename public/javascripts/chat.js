@@ -231,6 +231,7 @@
 
 	//主动获取chatList
 	$(document).ready(function(){  
+    setUser();
     getChatList();  
 	}); 
 	/**

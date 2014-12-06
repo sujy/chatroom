@@ -39,10 +39,4 @@
 			}
 		});
 	});
-	/**
-	 *  设置用户明
-	 **/
-	$(document).ready(function(){  
-    setUser();  
-	});  
 })();

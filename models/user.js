@@ -1,9 +1,11 @@
 var mongodb = require('./DB');
+var encryp = require('./crypto');
 
 // construct user(json)
 function User(user) {
 	this.username = user.username;
-	this.password = user.password;
+	this.password = encryp(user.password);
+	console.log('username:' + this.username + '--' + this.password);
 }
 
 //export

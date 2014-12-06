@@ -39,7 +39,6 @@
 			console.log(response);
 			if (response.statusCode == 204) {
 				alert(response.data);
-				$('#login-user input').val('');
 				$('#login-password input').val('');
 			}
 			if (response.statusCode == 200) {

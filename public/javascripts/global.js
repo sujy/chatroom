@@ -2,25 +2,20 @@ var USERNAME = 'Mr.X';
 /**
  *  设置用户名函数
  **/
-function setUser(){
+function setUser() {
     var url = window.location.toString();
     var info = url.split('?');
-    if(info[1] === undefined) {
-        USERNAME = 'Mr.X';
-    }else {
-       USERNAME = info[1]; 
+    if(info.length > 1){
+        USERNAME = info[1];
     }
-    
 }
 /**
  *  返回用户名函数
  **/
-function getUser(){
-    var url = window.location.toString();
-    var info = url.split('?');
-    console.log(url + info);
-    return info[1];
+function getUser() {
+    return USERNAME;
 }
+
 function packageMessage(_action, _source, _destination, _cookie, _data) {
     var object = {
         action: _action,
