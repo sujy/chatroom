@@ -229,12 +229,10 @@
 		}
 	});
 
-	/**
-	 *  设置用户明
-	 **/
+	//主动获取chatList
 	$(document).ready(function(){  
-    setUser();  
-	});  
+    getChatList();  
+	}); 
 	/**
 	 *  发送消息
 	 **/

@@ -5,8 +5,12 @@ var USERNAME = 'Mr.X';
 function setUser(){
     var url = window.location.toString();
     var info = url.split('?');
-    console.log(url + info);
-    USERNAME = info[1];
+    if(info[1] === undefined) {
+        USERNAME = 'Mr.X';
+    }else {
+       USERNAME = info[1]; 
+    }
+    
 }
 /**
  *  返回用户名函数

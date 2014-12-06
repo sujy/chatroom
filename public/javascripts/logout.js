@@ -27,7 +27,7 @@
 			socket.emit('message', message);
 		});
 
-		//接受保温
+		//接受报文
 		socket.on('response', function(response) {
 			console.log(response);
 			if (response.statusCode == 304) {
@@ -39,4 +39,10 @@
 			}
 		});
 	});
+	/**
+	 *  设置用户明
+	 **/
+	$(document).ready(function(){  
+    setUser();  
+	});  
 })();
