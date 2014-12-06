@@ -48,6 +48,10 @@
   text-align: left;
 }
 
+#bar1 {
+  height: 50px;
+}
+
 #login-form {
   width: 350px;
   padding: 30px;

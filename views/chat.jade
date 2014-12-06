@@ -16,7 +16,12 @@ block content
 			div#message-box
 				input.form-control(type = 'text' placeholder='按下Enter发送消息(支持HTML标签解析)，按下Esc清屏')
 			div#chat-btns
-				button(style='margin-right: 50px;')#send-message.btn.btn-primary 发送
+				.btn-group.dropup
+					button#send-message.btn.btn-primary 发送
+					button.btn.dropdown-toggle(data-toggle="dropdown" style="margin-right: 50px;")
+						span.caret
+					ul.dropdown-menu
+						input#file-upload(type="file" name="file")
 				button(style='margin-right: 50px;')#clean-box.btn.btn-primary 清屏
 				a(href='/')#logout.btn.btn-danger 登出
 
